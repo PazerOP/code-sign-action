@@ -66,6 +66,7 @@ async function signWithSigntool(fileName: string, password: string) {
         if (password) {
             cmd += ` /p ${password}`;
         }
+        console.log(cmd);
         const { stdout } = await asyncExec(cmd);
         console.log(stdout);
         return true;
