@@ -16,9 +16,13 @@ This action signs `.nupkg` files and files that are supported by `signtool.exe` 
 
 **Optional** Recursively search for DLL files.
 
+### `password`
+
+**Optional** Certificate password.
+
 ## Example usage
 
-```
+```yaml
 runs-on: windows-latest
 steps:
   uses: dlemstra/code-sign-action@v1
@@ -26,4 +30,5 @@ steps:
     certificate: '${{ secrets.CERTIFICATE }}'
     folder: 'files'
     recursive: true
+    password: '${{ secrets.CERTIFICATE_PASSWORD }}'
 ```

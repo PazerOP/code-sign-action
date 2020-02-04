@@ -59,9 +59,13 @@ async function downloadNuGet() {
     });
 }
 
-async function signWithSigntool(fileName: string) {
+async function signWithSigntool(fileName: string, password: string) {
     try {
-        const { stdout } = await asyncExec(`"${signtool}" sign /f ${certificateFileName} /tr ${timestampUrl} /td sha256 /fd sha256 ${fileName}`);
+        let cmd = `"${signtool}" sign /f ${certificateFileName} /tr ${timestampUrl} /td sha256 /fd sha256 ${fileName}`;
+        if (password) {
+            cmd += ` /p ${password}`;
+        }
+        const { stdout } = await asyncExec(cmd);
         console.log(stdout);
         return true;
     } catch(err) {
@@ -85,13 +89,13 @@ async function signNupkg(fileName: string) {
     }
 }
 
-async function trySignFile(fileName: string) {
+async function trySignFile(fileName: string, password: string) {
     console.log(`Signing ${fileName}.`);
     const extension = path.extname(fileName);
     for (let i=0; i< 10; i++) {
         await sleep(i);
         if (signtoolFileExtensions.includes(extension)) {
-            if (await signWithSigntool(fileName))
+            if (await signWithSigntool(fileName, password))
                 return;
         } else if (extension == '.nupkg') {
             if (await signNupkg(fileName))
@@ -118,10 +122,11 @@ async function* getFiles(folder: string, recursive: boolean): any {
 }
 
 async function signFiles() {
+    const pass = core.getInput('password', { required: false });
     const folder = core.getInput('folder', { required: true });
     const recursive = core.getInput('recursive') == 'true';
     for await (const file of getFiles(folder, recursive)) {
-        await trySignFile(file);
+        await trySignFile(file, pass);
     }
 }
 
