@@ -60,8 +60,9 @@ async function downloadNuGet() {
 }
 
 async function signWithSigntool(fileName: string, password: string) {
+    const certificate = core.getInput('certificate');
     try {
-        let cmd = `"${signtool}" sign /f ${certificateFileName} /tr ${timestampUrl} /td sha256 /fd sha256 ${fileName}`;
+        let cmd = `"${signtool}" sign /f ${certificate} /tr ${timestampUrl} /td sha256 /fd sha256 ${fileName}`;
         if (password) {
             cmd += ` /p ${password}`;
         }
@@ -135,7 +136,7 @@ async function signFiles() {
 
 async function run() {
     try {
-        if (await createCertificatePfx())
+        // if (await createCertificatePfx())
             await signFiles();
     }
     catch (err) {
