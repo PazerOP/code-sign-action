@@ -123,6 +123,9 @@ async function* getFiles(folder: string, recursive: boolean): any {
 
 async function signFiles() {
     const pass = core.getInput('password', { required: false });
+    if (pass) {
+        console.log('Files will be signed with the given password.');
+    }
     const folder = core.getInput('folder', { required: true });
     const recursive = core.getInput('recursive') == 'true';
     for await (const file of getFiles(folder, recursive)) {
