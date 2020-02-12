@@ -63,7 +63,7 @@ async function signWithSigntool(fileName: string, password: string) {
     try {
         let cmd = `"${signtool}" sign /f ${certificateFileName} /tr ${timestampUrl} /td sha256 /fd sha256 ${fileName}`;
         if (password) {
-            cmd += ` /p ${password}`;
+            cmd += "/p " + password;
         }
         const { stdout } = await asyncExec(cmd);
         console.log(stdout);
